@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lite catalog</title>
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700|Source+Sans+Pro:300,400,600" rel="stylesheet">
+  <style>
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 300;
+      background-color: #f7f4ef;
+      color: #2c2825;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    body:before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(ellipse at 15% 40%, rgba(255,160,50,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 70%, rgba(220,100,40,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body:after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .lang-bar {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px 20px 0;
+    }
+
+    .lang-select-wrap {
+      display: inline-block;
+      position: relative;
+    }
+
+    .lang-select-wrap:after {
+      content: '\25BE';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      margin-top: -8px;
+      color: #a09080;
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+    .lang-bar select {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.1);
+      color: #6b5e52;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 6px 28px 6px 12px;
+      cursor: pointer;
+      outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      letter-spacing: 0.04em;
+      -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      padding: 60px 24px 80px;
+    }
+
+    .app-icon {
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(135deg, #ffbe50 0%, #f05a28 100%);
+      border-radius: 24px;
+      margin-bottom: 36px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-shadow:
+        0 0 0 6px rgba(255,190,80,0.12),
+        0 16px 48px rgba(240,90,40,0.22),
+        0 4px 12px rgba(0,0,0,0.08);
+      box-shadow:
+        0 0 0 6px rgba(255,190,80,0.12),
+        0 16px 48px rgba(240,90,40,0.22),
+        0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .app-icon svg {
+      width: 46px;
+      height: 46px;
+      fill: #fff;
+    }
+
+    .app-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1;
+      color: #1c1814;
+      text-align: center;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .version-badge {
+      display: inline-block;
+      background: rgba(240,90,40,0.08);
+      border: 1px solid rgba(240,90,40,0.2);
+      color: #d44e1e;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      margin-bottom: 28px;
+    }
+
+    .app-desc {
+      font-size: 16px;
+      line-height: 1.75;
+      color: #7a6e65;
+      text-align: center;
+      max-width: 400px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,150,80,0.45), transparent);
+      margin: 0 auto 48px;
+    }
+
+    .btn-group {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      -webkit-transition: all 0.22s ease;
+      -moz-transition: all 0.22s ease;
+      transition: all 0.22s ease;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #ffbe50 0%, #f05a28 100%);
+      color: #ffffff;
+      padding: 16px 42px;
+      margin-right: 14px;
+      position: relative;
+      overflow: hidden;
+      -webkit-box-shadow:
+        0 6px 24px rgba(240,90,40,0.28),
+        0 2px 6px rgba(0,0,0,0.08);
+      box-shadow:
+        0 6px 24px rgba(240,90,40,0.28),
+        0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .btn-download:before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.18);
+      -webkit-transition: left 0.3s ease;
+      transition: left 0.3s ease;
+    }
+
+    .btn-download:hover:before {
+      left: 100%;
+    }
+
+    .btn-download:hover {
+      -webkit-box-shadow:
+        0 10px 36px rgba(240,90,40,0.4),
+        0 2px 8px rgba(0,0,0,0.1);
+      box-shadow:
+        0 10px 36px rgba(240,90,40,0.4),
+        0 2px 8px rgba(0,0,0,0.1);
+      -webkit-transform: translateY(-2px);
+      -ms-transform: translateY(-2px);
+      transform: translateY(-2px);
+    }
+
+    .btn-support {
+      background: #ffffff;
+      color: #4a3e35;
+      padding: 15px 36px;
+      border: 1px solid rgba(0,0,0,0.1);
+      -webkit-box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .btn-support:hover {
+      border-color: rgba(240,90,40,0.3);
+      color: #d44e1e;
+      -webkit-transform: translateY(-2px);
+      -ms-transform: translateY(-2px);
+      transform: translateY(-2px);
+      -webkit-box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 24px;
+      color: #c0b5aa;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    html[lang="ar"] body { direction: rtl; }
+    html[lang="ar"] .btn-download { margin-right: 0; margin-left: 14px; }
+
+    @media (max-width: 480px) {
+      .app-name { font-size: 36px; }
+      .btn-group {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+      }
+      .btn-download { margin-right: 0; margin-bottom: 12px; width: 220px; text-align: center; }
+      .btn-support { width: 220px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="lang-bar">
+    <div class="lang-select-wrap">
+      <select id="langSelect" onchange="setLang(this.value)">
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+        <option value="zh">中文（简体）</option>
+        <option value="es">Español</option>
+        <option value="pt">Português (BR)</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="ja">日本語</option>
+        <option value="ar">العربية</option>
+        <option value="it">Italiano</option>
+        <option value="ko">한국어</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="app-icon">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="6" width="16" height="16" rx="2"/>
+        <rect x="26" y="6" width="16" height="16" rx="2"/>
+        <rect x="6" y="26" width="16" height="16" rx="2"/>
+        <rect x="26" y="26" width="16" height="16" rx="2"/>
+      </svg>
+    </div>
+
+    <h1 class="app-name">Lite catalog</h1>
+    <span class="version-badge">v1.0.0</span>
+
+    <p class="app-desc" id="descText"></p>
+
+    <div class="divider"></div>
+
+    <div class="btn-group">
+      <a href="https://github.com/litecatalog/LiteCatalog/releases" target="_blank" class="btn btn-download" id="btnDownload"></a>
+      <a href="https://boosty.to/r57/" target="_blank" class="btn btn-support" id="btnSupport"></a>
+    </div>
+  </div>
+
+  <div class="footer" id="footerText"></div>
+
+  <script>
+    var translations = {
+      en:  { desc: "A curated collection of the best applications. Discover, download and explore software that makes your life easier.", download: "Download", support: "Support", footer: "© 2026 Lite catalog. All rights reserved." },
+      ru:  { desc: "Тщательно отобранная коллекция лучших приложений. Открывайте, скачивайте и изучайте программы, которые облегчат вашу жизнь.", download: "Скачать", support: "Поддержать", footer: "© 2026 Lite catalog. Все права защищены." },
+      zh:  { desc: "精心策划的最佳应用程序合集。发现、下载并探索让您生活更轻松的软件。", download: "下载", support: "支持我们", footer: "© 2026 Lite catalog. 保留所有权利。" },
+      es:  { desc: "Una colección cuidadosamente seleccionada de las mejores aplicaciones. Descubre, descarga y explora software que facilita tu vida.", download: "Descargar", support: "Apoyar", footer: "© 2026 Lite catalog. Todos los derechos reservados." },
+      pt:  { desc: "Uma coleção cuidadosamente selecionada dos melhores aplicativos. Descubra, baixe e explore softwares que facilitam sua vida.", download: "Baixar", support: "Apoiar", footer: "© 2026 Lite catalog. Todos os direitos reservados." },
+      fr:  { desc: "Une collection soigneusement sélectionnée des meilleures applications. Découvrez, téléchargez et explorez des logiciels qui simplifient votre vie.", download: "Télécharger", support: "Soutenir", footer: "© 2026 Lite catalog. Tous droits réservés." },
+      de:  { desc: "Eine sorgfältig zusammengestellte Sammlung der besten Anwendungen. Entdecken, laden und erkunden Sie Software, die Ihr Leben erleichtert.", download: "Herunterladen", support: "Unterstützen", footer: "© 2026 Lite catalog. Alle Rechte vorbehalten." },
+      ja:  { desc: "最高のアプリケーションを厳選したコレクションです。生活をより便利にするソフトウェアを発見、ダウンロード、探索してください。", download: "ダウンロード", support: "サポート", footer: "© 2026 Lite catalog. 全著作権所有。" },
+      ar:  { desc: "مجموعة منتقاة بعناية من أفضل التطبيقات. اكتشف وحمّل واستكشف البرامج التي تجعل حياتك أسهل.", download: "تنزيل", support: "دعم", footer: "© 2026 Lite catalog. جميع الحقوق محفوظة." },
+      it:  { desc: "Una raccolta accuratamente selezionata delle migliori applicazioni. Scopri, scarica ed esplora software che semplifica la tua vita.", download: "Scarica", support: "Supporta", footer: "© 2026 Lite catalog. Tutti i diritti riservati." },
+      ko:  { desc: "엄선된 최고의 애플리케이션 컬렉션. 당신의 삶을 더 편리하게 만드는 소프트웨어를 발견하고, 다운로드하고, 탐색하세요.", download: "다운로드", support: "후원하기", footer: "© 2026 Lite catalog. 모든 권리 보유." }
+    };
+
+    function setLang(lang) {
+      var t = translations[lang];
+      if (!t) return;
+      document.getElementById('descText').innerHTML = t.desc;
+      document.getElementById('btnDownload').innerHTML = t.download;
+      document.getElementById('btnSupport').innerHTML = t.support;
+      document.getElementById('footerText').innerHTML = t.footer;
+      document.documentElement.lang = lang;
+    }
+
+    function detectLang() {
+      var nav = navigator.language || navigator.userLanguage || 'en';
+      var code = nav.toLowerCase().substring(0, 2);
+      var map = { 'ru':'ru','zh':'zh','es':'es','pt':'pt','fr':'fr','de':'de','ja':'ja','ar':'ar','it':'it','ko':'ko','en':'en' };
+      return map[code] || 'en';
+    }
+
+    var initLang = detectLang();
+    document.getElementById('langSelect').value = initLang;
+    setLang(initLang);
+  </script>
+
+</body>
+</html>
